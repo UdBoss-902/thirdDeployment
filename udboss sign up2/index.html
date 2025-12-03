@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UDBOSS AI — Level 11 Demo</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Poppins',sans-serif;background:#0a0a0a;color:#fff;display:flex;justify-content:center;align-items:center;height:100vh;overflow:hidden;}
+
+.container{width:95%;max-width:400px;padding:40px;background:rgba(255,255,255,0.05);border-radius:25px;backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.15);box-shadow:0 0 50px rgba(0,255,200,0.2);position:absolute;transition:0.6s ease;opacity:0;transform:translateX(50px);pointer-events:none;}
+.container.active{opacity:1;transform:translateX(0);pointer-events:all;}
+
+h1{text-align:center;font-size:28px;margin-bottom:10px;}
+h1 span{background:linear-gradient(135deg,#00ffd5,#00aaff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+p{text-align:center;font-size:13px;color:#aaa;margin-bottom:20px;}
+input{width:100%;padding:12px;margin:7px 0 15px;border:none;border-radius:12px;background:rgba(255,255,255,0.1);color:#fff;font-size:14px;outline:none;transition:.2s;}
+input:focus{border:2px solid #00ffd5;}
+button{width:100%;padding:12px;background:linear-gradient(135deg,#00ffd5,#009dff);border:none;border-radius:12px;color:#000;font-size:16px;font-weight:600;cursor:pointer;transition:.2s;margin-top:5px;}
+button:hover{transform:scale(1.05);box-shadow:0 0 15px rgba(0,255,210,0.4);}
+.switch{text-align:center;margin-top:12px;font-size:13px;cursor:pointer;color:#00ffd5;}
+.warning{font-size:12px;margin-bottom:12px;background:rgba(255,200,0,0.2);padding:8px;border-radius:8px;text-align:center;border:1px solid rgba(255,200,0,0.4);}
+.success{text-align:center;color:#00ffd5;margin-top:15px;font-size:14px;display:none;}
+#welcomePage{text-align:center;}
+#welcomePage h2{font-size:24px;margin-bottom:10px;}
+#welcomePage p{opacity:0.8;margin-bottom:20px;}
+/* Particles */
+.particle{position:absolute;width:15px;height:15px;border-radius:50%;background:radial-gradient(circle,#00ffd5,#009dff);animation:float 6s infinite ease-in-out;opacity:0.4;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-40px);}}
+@media(max-width:480px){.container{padding:30px;border-radius:20px;}}
+</style>
+</head>
+<body>
+
+<!-- Floating Particles -->
+<div class="particle" style="top:10%;left:20%;animation-delay:0s;"></div>
+<div class="particle" style="top:80%;left:70%;animation-delay:2s;"></div>
+<div class="particle" style="top:50%;left:50%;animation-delay:4s;"></div>
+
+<!-- SIGNUP -->
+<div class="container active" id="signupPage">
+<h1>Sign Up <span>UDBOSS AI</span></h1>
+<div class="warning">⚠️ DEMO ONLY — DO NOT USE REAL DETAILS</div>
+<input id="signupName" placeholder="Full Name">
+<input id="signupEmail" placeholder="Email">
+<input id="signupPassword" type="password" placeholder="Password">
+<button onclick="createAccount()">Create Account</button>
+<div class="switch" onclick="gotoLogin()">Already have an account?</div>
+<div class="success" id="signupSuccess">Account created! Login below.</div>
+</div>
+
+<!-- LOGIN -->
+<div class="container" id="loginPage">
+<h1>Login <span>UDBOSS AI</span></h1>
+<input id="loginEmail" placeholder="Email">
+<input id="loginPassword" type="password" placeholder="Password">
+<button onclick="loginAccount()">Login</button>
+<div class="switch" onclick="gotoSignup()">Create demo account</div>
+<div class="success" id="loginError" style="color:#ff6f6f;"></div>
+</div>
+
+<!-- WELCOME -->
+<div class="container" id="welcomePage">
+<h2>Welcome, <span id="welcomeName"></span> 👋</h2>
+<p>You are now inside the UDBOSS AI Demo System</p>
+<button onclick="logout()">Logout</button>
+</div>
+
+<script>
+// Page switches
+function showPage(id){document.querySelectorAll('.container').forEach(c=>c.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function gotoLogin(){showPage('loginPage');}
+function gotoSignup(){showPage('signupPage');}
+
+// Signup
+function createAccount(){
+let name=signupName.value.trim(),email=signupEmail.value.trim(),pass=signupPassword.value.trim();
+if(!name||!email||!pass){alert("All fields required!");return;}
+localStorage.setItem("udbossUser",JSON.stringify({name,email,password:pass}));
+signupSuccess.style.display='block';
+setTimeout(()=>{signupSuccess.style.display='none';gotoLogin();},1200);
+}
+
+// Login
+function loginAccount(){
+let email=loginEmail.value.trim(),pass=loginPassword.value.trim(),user=JSON.parse(localStorage.getItem("udbossUser"));
+if(!user){loginError.innerText="No demo account found.";loginError.style.display='block';return;}
+if(email===user.email&&pass===user.password){loginError.style.display='none';welcomeName.innerText=user.name;showPage('welcomePage');}
+else{loginError.innerText="Invalid demo login.";loginError.style.display='block';}
+}
+
+// Logout
+function logout(){showPage('loginPage');}
+</script>
+</body>
+</html>
